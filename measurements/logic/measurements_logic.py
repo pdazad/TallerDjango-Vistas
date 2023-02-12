@@ -1,3 +1,4 @@
+from datetime import datetime
 from ..models import Variable
 from ..models import Measurement
 
@@ -11,7 +12,14 @@ def get_measurement(ms_pk):
 
 def update_measurement(ms_pk, new_ms):
     measurement = get_measurement(ms_pk)
-    measurement.name = new_ms["name"]
+    variable = Variable.objects.get(pk=new_ms["variable"])
+    date_time = datetime.strptime(new_ms["dateTime"], '%Y-%m-%dT%H:%M:%S.%fZ')
+
+    measurement.variable = variable
+    measurement.value = new_ms["value"]
+    measurement.unit = new_ms["unit"]
+    measurement.place = new_ms["place"]
+    measurement.dateTime = date_time
     measurement.save()
     return measurement
 
